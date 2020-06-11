@@ -35,7 +35,7 @@
 <script>
 export default {
     data: () => ({
-        drawer: false,
+        drawer: true,
         links: [
             {icon: "mdi-view-dashboard", text: "Dashboard", route: "/"},
             {icon: "mdi-folder", text: "My Projects", route: "/projects"},
