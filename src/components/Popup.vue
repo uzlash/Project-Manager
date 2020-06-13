@@ -8,9 +8,9 @@
                 <h2 class="font-weight-light grey--text ">Add new project</h2>
             </v-card-title>
             <v-card-text>
-                <v-form class="px-3">
-                    <v-text-field label="Project Title" prepend-icon="mdi-folder" v-model="title"></v-text-field>
-                    <v-textarea label="Project Content" prepend-icon="mdi-lead-pencil" v-model="content"></v-textarea>
+                <v-form class="px-3" ref="form">
+                    <v-text-field label="Project Title" prepend-icon="mdi-folder" v-model="title" :rules="inputRules"></v-text-field>
+                    <v-textarea label="Project Content" prepend-icon="mdi-lead-pencil" v-model="content" :rules="inputRules"></v-textarea>
                     
                     <v-menu
                     ref="menu"
@@ -37,7 +37,7 @@
                     </v-date-picker>
                 </v-menu>
 
-                    <v-btn class="teal white--text" @click="submit">Submit</v-btn>
+                    <v-btn class="teal white--text" @click="submit">Add Project</v-btn>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -52,11 +52,17 @@ export default {
         content: '',
         due: null,
         date: new Date().toISOString().substr(0, 10),
-        menu: false
+        menu: false,
+        inputRules: [
+        v => !!v || 'Field is required',
+        v => (v && v.length >= 3) || 'Minimum length is 3 characters',
+      ]
     }),
     methods: {
         submit() {
-            console.log(this.date)
+            if(this.$refs.form.validate()){
+                console.log("Worked")
+            }
         }
     },
      computed: {
