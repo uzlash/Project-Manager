@@ -21,22 +21,30 @@
 </template>
 <script>
 // @ is an alias to /src
-
+import db from "@/firebase/init"
 export default {
   data: () => ({
-    projects: [
-      {title: "Update upwork profile", person: "Ace", due: "16th january 2020", status: "Overdue"},
-      {title: "Create vue based portfolio", person: "Usman", due: "15th june 2020", status: "Pending"},
-      {title: "Code up additional vuetify dashboards", person: "Uzlash", due: "30th june 2020", status: "Ongoing"},
-      {title: "Submit module for code review", person: "Iceguy", due: "7th june 2020", status: "Completed"} 
-    ]
+    projects: []
   }),
   computed: {
     myProjects() {
       return this.projects.filter(project => {
-        return project.person == "Ace"
+        return project.person == "Usman"
       })
     }
   },
+  created() {
+    db.collection('projects').onSnapshot(res => {
+      const changes = res.docChanges()
+      changes.forEach(change => {
+        if(change.type === 'added') {
+          this.projects.push({
+            ...change.doc.data(),
+            id: change.doc.id
+          })
+        }        
+      });
+    })
+  }
 }
 </script>

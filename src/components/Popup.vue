@@ -1,7 +1,7 @@
 <template>
-    <V-dialog max-width="600px">
+    <V-dialog max-width="600px" v-model="dialog">
         <template v-slot:activator="{ on, attrs }">
-        <v-btn color="teal white--text font-weight-light" v-bind="attrs" v-on="on">Add new project</v-btn>
+        <v-btn color="#63CEB2" class="white--text" v-bind="attrs" v-on="on">Add new project</v-btn>
         </template>
         <v-card>
             <v-card-title>
@@ -37,7 +37,7 @@
                     </v-date-picker>
                 </v-menu>
 
-                    <v-btn class="teal white--text" @click="submit">Add Project</v-btn>
+                    <v-btn color="#63CEB2"  class="white--text" @click="submit" :loading="loading">Add Project</v-btn>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -46,6 +46,7 @@
 
 <script>
  import moment from 'moment';
+ import db from '@/firebase/init'
 export default {
     data: () => ({
         title: '',
@@ -53,6 +54,8 @@ export default {
         due: null,
         date: new Date().toISOString().substr(0, 10),
         menu: false,
+        loading: false,
+        dialog: false,
         inputRules: [
         v => !!v || 'Field is required',
         v => (v && v.length >= 3) || 'Minimum length is 3 characters',
@@ -61,7 +64,24 @@ export default {
     methods: {
         submit() {
             if(this.$refs.form.validate()){
-                console.log("Worked")
+                this.loading = true
+                const project = {
+                    title: this.title,
+                    content: this.content,
+                    due: moment(this.date).format('Do MMM YYYY'),
+                    person: 'Ace',
+                    status: 'ongoing'
+                }
+                db.collection('projects').add(project)
+                .then(() => {
+                    console.log("Added to db")
+                    this.loading = false
+                    this.dialog = false
+                    this.$emit('ProjectAdded')
+                })
+                .catch( err => {
+                    console.log(err)
+                })
             }
         }
     },

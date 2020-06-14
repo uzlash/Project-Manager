@@ -1,6 +1,10 @@
 <template>
     <div>
         <nav>
+
+            <v-snackbar v-model="snackbar" :timeout="4000" top color="teal">Project added successfully.
+                <v-btn outlined color="white" @click="snackbar = false">Close</v-btn>
+            </v-snackbar>
             <v-app-bar flat app>
                 <v-app-bar-nav-icon class="grey--text" @click="drawer = !drawer"></v-app-bar-nav-icon>
                 <v-toolbar-title class="grey--text text-uppercase">
@@ -33,12 +37,12 @@
                 <v-layout column align-center>
                     <v-flex class="mt-5">
                         <v-avatar size="80">
-                            <img src="/avatar-1.png">
+                            <img src="/avatar-3.png">
                         </v-avatar>
-                    <p class="white--text subheading mt-3 text-center">Ace</p>
+                    <p class="white--text subheading mt-3 text-center">Usman</p>
                     </v-flex>
                     <v-flex class="my-3">
-                        <Popup />
+                        <Popup @ProjectAdded="snackbar = true" />
                     </v-flex>
                 </v-layout>
                 <v-list>
@@ -64,6 +68,7 @@ export default {
     components: { Popup },
     data: () => ({
         drawer: true,
+        snackbar: false,
         links: [
             {icon: "mdi-view-dashboard", text: "Dashboard", route: "/"},
             {icon: "mdi-folder", text: "My Projects", route: "/projects"},

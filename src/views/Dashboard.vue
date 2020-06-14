@@ -53,54 +53,56 @@
 
 <script>
 // @ is an alias to /src
-
+import db from '@/firebase/init';
 export default {
   data: () => ({
-    projects: [
-      {title: "Update upwork profile", person: "Ace", due: "16th january 2020", status: "Overdue"},
-      {title: "Create vue based portfolio", person: "Usman", due: "15th june 2020", status: "Pending"},
-      {title: "Code up additional vuetify dashboards", person: "Uzlash", due: "30th june 2020", status: "Ongoing"},
-      {title: "Submit module for code review", person: "Iceguy", due: "7th june 2020", status: "Completed"}
-      
-    ]
-    // projects: [
-    //   {title: "Design", person: "The Net Ninja", due: "30th june 2020", status: "Ongoing"},
-    //   {title: "Code", person: "Chun Li", due: "16th january 2020", status: "Overdue"},
-    //   {title: "Designers", person: "Ryu", due: "7th june 2020", status: "Completed"},
-    //   {title: "Create", person: "Gouken", due: "15th june 2020", status: "Pending"}      
-    // ]
+    projects: []
   }),
   methods: {
     sortBy(property) {
       this.projects.sort( (a, b) => a[property] < b[property] ? -1 : 1);
     }
+  },
+
+  created() {
+    db.collection('projects').onSnapshot(res => {
+      const changes = res.docChanges()
+      changes.forEach(change => {
+        if(change.type === 'added') {
+          this.projects.push({
+            ...change.doc.data(),
+            id: change.doc.id
+          })
+        }        
+      });
+    })
   }
 }
 </script>
 
 <style>
-.project.Pending {
+.project.pending {
   border-left: solid 4px #9E9E9E;
 }
-.project.Ongoing {
+.project.ongoing {
   border-left: solid 4px #2196F3;
 }
-.project.Completed {
+.project.completed {
   border-left: solid 4px #4CAF50;
 }
-.project.Overdue {
+.project.overdue {
   border-left: solid 4px #F44336;
 }
-.v-chip.Pending {
+.v-chip.pending {
   background: #9E9E9E !important;
 }
-.v-chip.Ongoing {
+.v-chip.ongoing {
   background: #2196F3 !important;
 }
-.v-chip.Completed {
+.v-chip.completed {
   background: #4CAF50 !important;
 }
-.v-chip.Overdue {
+.v-chip.overdue {
   background: #F44336 !important;
 }
 </style>
